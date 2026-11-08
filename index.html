@@ -19,13 +19,24 @@
   <main class="content">
 
     <section id="feedbacks" class="tab-content active">
-      <h1>Client Feedbacks</h1>
+      <h1>Client Feedbacks <span class="count-badge" id="reviews-count" hidden></span></h1>
       <p class="muted-line">
         Verified reviews from
         <a href="https://t.me/peyzadev_feedback" target="_blank" rel="noopener">t.me/peyzadev_feedback</a>
       </p>
+
+      <div class="card rating-card" id="rating-card" hidden>
+        <div class="rating-top">
+          <span class="rating-value" id="rating-value">0.0</span>
+          <span class="rating-max">/ 10</span>
+        </div>
+        <div class="rating-bar"><div class="rating-fill" id="rating-fill"></div></div>
+        <div class="rating-caption" id="rating-caption"></div>
+      </div>
+
       <div id="reviews-container">
-        <div class="card"><p class="empty">Loading...</p></div>
+        <div class="card skeleton"></div>
+        <div class="card skeleton"></div>
       </div>
     </section>
 
@@ -64,41 +75,60 @@
       <button class="close-modal" id="closeModalBtn" aria-label="Close">&times;</button>
       <h2 id="modalTitle" class="modal-title"></h2>
       <p id="modalDesc" class="modal-desc"></p>
+      <div class="tags" id="modalTags"></div>
       <div class="modal-actions">
-        <a href="#" id="downloadBtn" class="btn btn-secondary" target="_blank" rel="noopener">Download</a>
-        <button class="btn btn-secondary" id="copyBtn">Copy link</button>
+        <a href="#" id="downloadBtn" class="btn" target="_blank" rel="noopener">Download</a>
+        <span class="soon" id="soonNote">Download coming soon</span>
       </div>
     </div>
   </div>
 
   <script>
     // ---------- Projects data (edit here) ----------
-    // download: put a link when a build is ready; empty = button hidden
     const PROJECTS = [
       {
         title: 'ReHLDS Android ARM64 (Bionic)',
         short: 'High-performance server core optimization for mobile environments.',
         desc: 'Optimized Counter-Strike 1.6 server core compiled natively for Android ARM64 bionic runtime.',
+        tags: ['C++', 'ARM64', 'CS 1.6'],
         download: ''
       },
       {
         title: 'ReGameDLL Android ARM64',
         short: 'Gameplay logic and entity management system.',
         desc: 'Custom gameplay logic library and API wrapper tailored for CS 1.6 servers on Android ARM64.',
+        tags: ['C++', 'ARM64', 'Gameplay'],
         download: ''
       },
       {
         title: 'MetaMod-R Android ARM64',
         short: 'Modular plugin architecture support for mobile servers.',
         desc: 'Plugin management framework adapted for hosting and controlling CS 1.6 servers on mobile ARM64 systems.',
+        tags: ['C++', 'ARM64', 'Plugins'],
         download: ''
       }
     ];
 
+    // ---------- Helpers ----------
+    const $ = id => document.getElementById(id);
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function nameColor(name) {
+      let h = 0;
+      for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360;
+      return 'hsl(' + h + ', 55%, 48%)';
+    }
+
     // ---------- Tabs ----------
     function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === tabId));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.toggle('active', el.dataset.tab === tabId));
+      document.querySelectorAll('.tab-content').forEach(s => s.classList.toggle('active', s.id === tabId));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
       history.replaceState(null, '', '#' + tabId);
     }
 
@@ -110,78 +140,61 @@
     if (['feedbacks', 'projects', 'about'].includes(startTab)) switchTab(startTab);
 
     // ---------- Projects + modal ----------
-    const modal = document.getElementById('projectModal');
-    const downloadBtn = document.getElementById('downloadBtn');
+    const modal = $('projectModal');
 
     function openModal(project) {
-      document.getElementById('modalTitle').textContent = project.title;
-      document.getElementById('modalDesc').textContent = project.desc;
-      if (project.download) {
-        downloadBtn.href = project.download;
-        downloadBtn.style.display = '';
-      } else {
-        downloadBtn.style.display = 'none';
-      }
+      $('modalTitle').textContent = project.title;
+      $('modalDesc').textContent = project.desc;
+
+      const tags = $('modalTags');
+      tags.innerHTML = '';
+      project.tags.forEach(t => tags.appendChild(el('span', 'tag', t)));
+
+      const hasLink = Boolean(project.download);
+      $('downloadBtn').hidden = !hasLink;
+      $('soonNote').hidden = hasLink;
+      if (hasLink) $('downloadBtn').href = project.download;
+
       modal.classList.add('active');
+      $('closeModalBtn').focus();
     }
 
     function closeModal() {
       modal.classList.remove('active');
     }
 
-    const projectsContainer = document.getElementById('projects-container');
     PROJECTS.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'card project-card';
+      const card = el('div', 'card project-card');
       card.tabIndex = 0;
       card.setAttribute('role', 'button');
 
-      const title = document.createElement('div');
-      title.className = 'project-title';
-      title.textContent = p.title;
+      const tags = el('div', 'tags');
+      p.tags.forEach(t => tags.appendChild(el('span', 'tag', t)));
 
-      const short = document.createElement('p');
-      short.className = 'project-short';
-      short.textContent = p.short;
-
-      const status = document.createElement('span');
-      status.className = 'status';
-      status.textContent = 'Work in progress..';
-
-      card.append(title, short, status);
+      card.append(
+        el('div', 'project-title', p.title),
+        el('p', 'project-short', p.short),
+        tags,
+        el('span', 'status', 'Work in progress..')
+      );
       card.addEventListener('click', () => openModal(p));
       card.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(p); }
       });
-      projectsContainer.appendChild(card);
+      $('projects-container').appendChild(card);
     });
 
-    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    $('closeModalBtn').addEventListener('click', closeModal);
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    document.getElementById('copyBtn').addEventListener('click', async () => {
-      const btn = document.getElementById('copyBtn');
-      try {
-        await navigator.clipboard.writeText(location.href.split('#')[0]);
-        btn.textContent = 'Copied!';
-      } catch (e) {
-        btn.textContent = 'Copy failed';
-      }
-      setTimeout(() => { btn.textContent = 'Copy link'; }, 1500);
-    });
-
     // ---------- Reviews ----------
-    const reviewsContainer = document.getElementById('reviews-container');
+    const reviewsContainer = $('reviews-container');
 
     function showEmpty(text) {
       reviewsContainer.innerHTML = '';
-      const card = document.createElement('div');
-      card.className = 'card';
-      const p = document.createElement('p');
-      p.className = 'empty';
-      p.textContent = text;
-      card.appendChild(p);
+      const card = el('div', 'card');
+      card.appendChild(el('p', 'empty', text));
       reviewsContainer.appendChild(card);
     }
 
@@ -191,39 +204,47 @@
         showEmpty('No reviews yet.');
         return;
       }
+
+      const badge = $('reviews-count');
+      badge.textContent = data.length;
+      badge.hidden = false;
+
       data.forEach(review => {
-        const card = document.createElement('div');
-        card.className = 'card';
+        const author = String(review.author || '?');
+        const card = el('div', 'card review-card');
 
-        const header = document.createElement('div');
-        header.className = 'review-header';
+        const avatar = el('div', 'avatar', author.charAt(0).toUpperCase());
+        avatar.style.background = nameColor(author);
 
-        const author = document.createElement('span');
-        author.className = 'review-author';
-        author.textContent = '@' + review.author;
+        const meta = el('div', 'review-meta');
+        meta.append(el('span', 'review-author', '@' + author), el('span', 'review-date', review.date || ''));
 
-        const date = document.createElement('span');
-        date.className = 'review-date';
-        date.textContent = review.date;
+        const head = el('div', 'review-header');
+        head.append(avatar, meta);
 
-        header.append(author, date);
-
-        const text = document.createElement('p');
-        text.className = 'review-text';
-        text.textContent = review.text;
-
-        card.append(header, text);
+        card.append(head, el('p', 'review-text', review.text || ''));
         reviewsContainer.appendChild(card);
       });
     }
 
     fetch('reviews.json?t=' + Date.now(), { cache: 'no-store' })
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(renderReviews)
       .catch(() => showEmpty('No reviews yet.'));
+
+    // ---------- Ratings ----------
+    fetch('ratings.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(data => {
+        const votes = Object.values(data).map(Number).filter(n => n >= 1 && n <= 10);
+        if (votes.length === 0) return;
+        const avg = votes.reduce((a, b) => a + b, 0) / votes.length;
+        $('rating-value').textContent = avg.toFixed(1);
+        $('rating-fill').style.width = (avg * 10) + '%';
+        $('rating-caption').textContent = 'Based on ' + votes.length + ' rating' + (votes.length === 1 ? '' : 's');
+        $('rating-card').hidden = false;
+      })
+      .catch(() => {});
   </script>
 </body>
 </html>

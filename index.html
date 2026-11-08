@@ -3,60 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peyza Kuprey | Top Freelance Developer</title>
+  <title>Peyza Kuprey | Portfolio</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="profile-card">
-      <div class="avatar-container">
-        <img src="avatar.png" alt="Peyza Kuprey" class="avatar" onerror="this.src='https://via.placeholder.com/140'">
-        <span class="badge">TOP 1%</span>
+
+  <div class="sidebar">
+    <h2>Peyza Kuprey</h2>
+    <button class="tab-btn active" onclick="switchTab('feedbacks')">Feedbacks</button>
+    <button class="tab-btn" onclick="switchTab('projects')">Projects</button>
+    <button class="tab-btn" onclick="switchTab('about')">About me</button>
+  </div>
+
+  <div class="content">
+    
+    <div id="feedbacks" class="tab-content active">
+      <h1>Client Feedbacks</h1>
+      <p style="margin-bottom: 20px; color: var(--text-muted);">
+        Verified reviews from <a href="https://t.me/peyzadev_feedback" target="_blank" style="color: var(--accent-color); text-decoration: none;">t.me/peyzadev_feedback</a>
+      </p>
+      <div id="reviews-container"></div>
+    </div>
+
+    <div id="projects" class="tab-content">
+      <h1>Projects</h1>
+      <div class="card project-card" onclick="openModal('ReHLDS Bionic 64', 'Optimized ReHLDS build compiled for ARM bionic 64 architecture.')">
+        <div class="project-title">ReHLDS Bionic 64</div>
+        <p style="color: var(--text-muted); font-size: 14px;">High-performance server core optimization.</p>
+        <span class="status">Work in progress..</span>
       </div>
-      <div class="info">
-        <h1>Peyza Kuprey</h1>
-        <div class="rating">★★★★★ 5.0 <span style="color: var(--text-muted); font-size: 14px;">(100% successful orders)</span></div>
-        <p class="bio">Specialized in Telegram bot development, Python automation scripts, and server software optimization.</p>
-        <div class="tags">
-          <span class="tag">Python 3</span>
-          <span class="tag">Telegram Bots</span>
-          <span class="tag">Automation</span>
-          <span class="tag">Server Optimization</span>
-        </div>
-        <a href="https://t.me/peyzadev_feedback" target="_blank" class="btn">Place an Order</a>
+      <div class="card project-card" onclick="openModal('ReGameDLL ARM Bionic 64', 'Custom ReGameDLL implementation tailored for ARM bionic 64 environments.')">
+        <div class="project-title">ReGameDLL ARM Bionic 64</div>
+        <p style="color: var(--text-muted); font-size: 14px;">Gameplay logic and entity management.</p>
+        <span class="status">Work in progress..</span>
+      </div>
+      <div class="card project-card" onclick="openModal('MetaMod ARM Bionic 64', 'Metamod-R plugin loader adapted for ARM bionic 64 systems.')">
+        <div class="project-title">MetaMod ARM Bionic 64</div>
+        <p style="color: var(--text-muted); font-size: 14px;">Modular plugin architecture support.</p>
+        <span class="status">Work in progress..</span>
       </div>
     </div>
 
-    <div class="reviews-section">
-      <h2>💬 Verified Client Reviews</h2>
-      <div id="reviews-container" class="reviews-grid"></div>
+    <div id="about" class="tab-content">
+      <h1>About Me</h1>
+      <div class="card">
+        <div class="bio-text">
+          Welcome to my profile! I am a developer focusing on <strong>Python scripts</strong>, <strong>automation</strong>, and <strong>game server software optimization</strong>.
+          <br><br>
+          <strong>🛠 Tech Stack & Tools</strong><br>
+          - <strong>Languages:</strong> Python 3, C/C++, Java (J2ME), HTML/CSS/JS<br>
+          - <strong>Bot Development:</strong> <code>aiogram</code>, <code>telebot</code>, REST APIs<br>
+          - <strong>Automation & Parsing:</strong> <code>BeautifulSoup</code>, <code>requests</code>, JSON/CSV processing<br>
+          - <strong>Game Server Software:</strong> ReHLDS, ReGameDLL, Metamod-R, Linux administration<br>
+          <br>
+          <strong>📌 Current Focus</strong><br>
+          - Building robust Telegram bots and automation tools.<br>
+          - Optimizing game server configurations and backend logic.<br>
+          - Retro mobile software development & J2ME games porting.<br>
+          <br>
+          <strong>📫 Contact Me</strong><br>
+          - <strong>Telegram:</strong> <a href="https://t.me/peyzadev_feedback" target="_blank" style="color: var(--accent-color); text-decoration: none;">@PeyzaKuprey</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="projectModal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()">&times;</button>
+      <h2 id="modalTitle" style="margin-bottom: 12px;"></h2>
+      <p id="modalDesc" style="color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;"></p>
+      <div class="modal-actions">
+        <a href="#" id="downloadBtn" class="btn">Download</a>
+        <button class="btn btn-secondary" onclick="copyLink()">Copy link</button>
+      </div>
     </div>
   </div>
 
   <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function openModal(title, desc) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalDesc').innerText = desc;
+      document.getElementById('projectModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('projectModal').classList.remove('active');
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+
     fetch('reviews.json')
       .then(response => response.json())
       .then(data => {
         const container = document.getElementById('reviews-container');
         container.innerHTML = '';
         if (data.length === 0) {
-          container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No reviews yet. Real orders will appear here soon.</p>';
+          container.innerHTML = '<div class="card"><p style="color: var(--text-muted); text-align: center;">No results yet.</p></div>';
           return;
         }
         data.forEach(review => {
           const card = document.createElement('div');
-          card.className = 'review-card';
+          card.className = 'card';
           card.innerHTML = `
-            <div class="review-header">
-              <span class="review-author">${review.author}</span>
-              <span class="review-date">${review.date}</span>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-weight: 600; color: var(--accent-color);">@${review.author}</span>
+              <span style="font-size: 12px; color: var(--text-muted);">${review.date}</span>
             </div>
-            <p class="review-text">${review.text}</p>
+            <p style="color: var(--text-main); line-height: 1.4;">${review.text}</p>
           `;
           container.appendChild(card);
         });
       })
-      .catch(err => console.error('Error loading reviews:', err));
+      .catch(err => {
+        const container = document.getElementById('reviews-container');
+        container.innerHTML = '<div class="card"><p style="color: var(--text-muted); text-align: center;">No results yet.</p></div>';
+      });
   </script>
 </body>
 </html>

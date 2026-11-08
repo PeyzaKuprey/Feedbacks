@@ -15,6 +15,7 @@
     <button class="tab-btn active" data-tab="feedbacks">Feedbacks</button>
     <button class="tab-btn" data-tab="projects">Projects</button>
     <button class="tab-btn" data-tab="about">About me</button>
+    <button class="tab-btn" data-tab="legal">Legal</button>
   </nav>
 
   <main class="content">
@@ -68,6 +69,106 @@
         </div>
       </div>
     </section>
+
+    <section id="legal" class="tab-content">
+      <h1>Legal</h1>
+      <p class="muted-line">Last updated: November 9, 2026</p>
+
+      <div class="card legal-card">
+
+        <details open>
+          <summary>Privacy Policy</summary>
+          <div class="legal-body">
+            <h3>1. Overview</h3>
+            <p>This website is a personal portfolio. It is accompanied by a Telegram bot that lets people leave reviews and quick ratings. This policy explains what data is involved and how it is handled.</p>
+
+            <h3>2. This website</h3>
+            <ul>
+              <li>The website does not use cookies, analytics, advertising trackers or user accounts.</li>
+              <li>It has no forms and does not send any data from your browser to me. It only loads the published reviews and ratings files.</li>
+              <li>The site is hosted on GitHub Pages. GitHub may process technical data such as your IP address when you visit, according to its own privacy policy.</li>
+            </ul>
+
+            <h3>3. Telegram bot: reviews</h3>
+            <p>When you send <code>/feedback</code>, the bot stores and publishes:</p>
+            <ul>
+              <li>your Telegram username (or your first name if you have no username);</li>
+              <li>the text of your review;</li>
+              <li>the date it was submitted.</li>
+            </ul>
+            <p>Reviews are public: they are shown on this website and stored in a public GitHub repository. Do not include personal or sensitive information in a review.</p>
+
+            <h3>4. Telegram bot: quick ratings</h3>
+            <p>When you use <code>/fastf</code>, your rating (1–10) is stored together with a one-way hash of your Telegram user ID. Your name, username and ID are not stored with it, and the website shows only the average score. The hash is used only so that each person has a single rating that can be changed or removed.</p>
+
+            <h3>5. Other data</h3>
+            <p>To prevent spam, the bot temporarily keeps your Telegram user ID in memory for a short cooldown between reviews. It is not written to any file and is lost when the bot restarts.</p>
+
+            <h3>6. Retention and removal</h3>
+            <p>Reviews and ratings are kept until they are removed. See the "Data Removal" section below for how to delete them.</p>
+
+            <h3>7. Third parties</h3>
+            <p>Your use of the bot is also subject to the policies of Telegram and GitHub. I do not sell or share your data with anyone else.</p>
+
+            <h3>8. Children</h3>
+            <p>The bot and website are not intended for children.</p>
+
+            <h3>9. Changes</h3>
+            <p>I may update this policy. The "Last updated" date at the top of this page shows when it last changed.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Terms of Use</summary>
+          <div class="legal-body">
+            <h3>1. Purpose</h3>
+            <p>This website presents my work and services. By using it, or by sending a review or rating through the bot, you agree to these terms.</p>
+
+            <h3>2. Reviews and ratings</h3>
+            <ul>
+              <li>Submit only honest reviews based on your own experience.</li>
+              <li>No spam, advertising, insults, hate speech, personal data of others, or unlawful content.</li>
+              <li>By submitting a review you agree that it may be displayed publicly on this website and in its repository.</li>
+              <li>I may remove any review or rating at my discretion, for example if it breaks these rules.</li>
+            </ul>
+
+            <h3>3. Projects and downloads</h3>
+            <p>Projects and any downloadable files are provided "as is", without warranty of any kind. Many are experimental or marked as work in progress. You use them at your own risk.</p>
+
+            <h3>4. Third-party names</h3>
+            <p>Counter-Strike is a trademark of Valve Corporation. ReHLDS, ReGameDLL, Metamod-R and other third-party names are used only to describe compatibility and belong to their respective owners. This website is not affiliated with or endorsed by them.</p>
+
+            <h3>5. External links</h3>
+            <p>Links to Telegram and other websites are provided for convenience. I am not responsible for their content or policies.</p>
+
+            <h3>6. Limitation of liability</h3>
+            <p>To the extent permitted by law, I am not liable for any damage or loss resulting from the use of this website, the bot, or any projects presented here.</p>
+
+            <h3>7. Changes</h3>
+            <p>I may change these terms at any time. Continued use of the website or bot means you accept the updated terms.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Data Removal &amp; Contact</summary>
+          <div class="legal-body">
+            <ul>
+              <li><strong>Remove your rating:</strong> send <code>/removerating</code> to the bot, or press "Remove my rating" under your rating message.</li>
+              <li><strong>Remove your review:</strong> message me on Telegram and I will delete it. Please send the review text and the username it was posted under.</li>
+              <li><strong>Any other privacy question:</strong> contact me using the details below.</li>
+            </ul>
+            <p>Contact: <a href="https://t.me/peyzadev_feedback" target="_blank" rel="noopener">@PeyzaKuprey on Telegram</a></p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <span>© 2026 Peyza Kuprey</span>
+      <span class="dot">·</span>
+      <button class="link-btn" data-goto="legal">Privacy &amp; Terms</button>
+    </footer>
 
   </main>
 
@@ -135,16 +236,21 @@
     }
 
     // ---------- Tabs ----------
-    const TABS = ['feedbacks', 'projects', 'about'];
+    const TABS = ['feedbacks', 'projects', 'about', 'legal'];
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(s => s.classList.toggle('active', s.id === tabId));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
       history.replaceState(null, '', '#' + tabId);
+      window.scrollTo(0, 0);
     }
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    document.querySelectorAll('[data-goto]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.goto));
     });
 
     const startTab = location.hash.replace('#', '');

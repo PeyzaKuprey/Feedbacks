@@ -239,4 +239,13 @@ h1 { font-size: 26px; margin-bottom: 20px; }
   .tab-btn.active { box-shadow: inset 0 -3px 0 var(--accent-color); }
   .content { padding: 20px 16px; }
   .card { padding: 18px; }
+.muted-line { margin-bottom: 20px; color: var(--text-muted); }
+.empty { color: var(--text-muted); text-align: center; }
+.project-short { color: var(--text-muted); font-size: 14px; }
+.modal-title { margin-bottom: 12px; }
+.modal-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+.review-header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.review-author { font-weight: 600; color: var(--accent-color); }
+.review-date { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.review-text { color: var(--text-main); line-height: 1.4; }
 }

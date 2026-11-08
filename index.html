@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Portfolio of Peyza Kuprey: Telegram bots, automation, game server software.">
   <title>Peyza Kuprey | Portfolio</title>
+  <link rel="icon" href="logo.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <nav class="sidebar">
-    <h2>Peyza Kuprey</h2>
+    <h2><img src="logo.png" alt="" class="logo" onerror="this.style.display='none'"> Peyza Kuprey</h2>
     <button class="tab-btn active" data-tab="feedbacks">Feedbacks</button>
     <button class="tab-btn" data-tab="projects">Projects</button>
     <button class="tab-btn" data-tab="about">About me</button>
@@ -85,6 +86,7 @@
 
   <script>
     // ---------- Projects data (edit here) ----------
+    // download: put a link when a build is ready; empty = "coming soon" note
     const PROJECTS = [
       {
         title: 'ReHLDS Android ARM64 (Bionic)',
@@ -125,7 +127,16 @@
       return 'hsl(' + h + ', 55%, 48%)';
     }
 
+    function loadJson(file) {
+      return fetch(file + '?t=' + Date.now(), { cache: 'no-store' }).then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      });
+    }
+
     // ---------- Tabs ----------
+    const TABS = ['feedbacks', 'projects', 'about'];
+
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(s => s.classList.toggle('active', s.id === tabId));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
@@ -137,7 +148,7 @@
     });
 
     const startTab = location.hash.replace('#', '');
-    if (['feedbacks', 'projects', 'about'].includes(startTab)) switchTab(startTab);
+    if (TABS.includes(startTab)) switchTab(startTab);
 
     // ---------- Projects + modal ----------
     const modal = $('projectModal');
@@ -227,14 +238,10 @@
       });
     }
 
-    fetch('reviews.json?t=' + Date.now(), { cache: 'no-store' })
-      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(renderReviews)
-      .catch(() => showEmpty('No reviews yet.'));
+    loadJson('reviews.json').then(renderReviews).catch(() => showEmpty('No reviews yet.'));
 
     // ---------- Ratings ----------
-    fetch('ratings.json?t=' + Date.now(), { cache: 'no-store' })
-      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    loadJson('ratings.json')
       .then(data => {
         const votes = Object.values(data).map(Number).filter(n => n >= 1 && n <= 10);
         if (votes.length === 0) return;

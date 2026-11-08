@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peyza Kuprey | Top Freelance Developer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="profile-card">
+      <div class="avatar-container">
+        <img src="avatar.png" alt="Peyza Kuprey" class="avatar" onerror="this.src='https://via.placeholder.com/140'">
+        <span class="badge">TOP 1%</span>
+      </div>
+      <div class="info">
+        <h1>Peyza Kuprey</h1>
+        <div class="rating">★★★★★ 5.0 <span style="color: var(--text-muted); font-size: 14px;">(100% successful orders)</span></div>
+        <p class="bio">Specialized in Telegram bot development, Python automation scripts, and server software optimization.</p>
+        <div class="tags">
+          <span class="tag">Python 3</span>
+          <span class="tag">Telegram Bots</span>
+          <span class="tag">Automation</span>
+          <span class="tag">Server Optimization</span>
+        </div>
+        <a href="https://t.me/peyzadev_feedback" target="_blank" class="btn">Place an Order</a>
+      </div>
+    </div>
 
+    <div class="reviews-section">
+      <h2>💬 Verified Client Reviews</h2>
+      <div id="reviews-container" class="reviews-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    fetch('reviews.json')
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('reviews-container');
+        container.innerHTML = '';
+        if (data.length === 0) {
+          container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No reviews yet. Real orders will appear here soon.</p>';
+          return;
+        }
+        data.forEach(review => {
+          const card = document.createElement('div');
+          card.className = 'review-card';
+          card.innerHTML = `
+            <div class="review-header">
+              <span class="review-author">${review.author}</span>
+              <span class="review-date">${review.date}</span>
+            </div>
+            <p class="review-text">${review.text}</p>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => console.error('Error loading reviews:', err));
+  </script>
+</body>
+</html>

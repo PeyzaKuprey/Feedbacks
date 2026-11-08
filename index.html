@@ -27,19 +27,19 @@
 
     <div id="projects" class="tab-content">
       <h1>Projects</h1>
-      <div class="card project-card" onclick="openModal('ReHLDS Bionic 64', 'Optimized ReHLDS build compiled for ARM bionic 64 architecture.')">
-        <div class="project-title">ReHLDS Bionic 64</div>
-        <p style="color: var(--text-muted); font-size: 14px;">High-performance server core optimization.</p>
+      <div class="card project-card" onclick="openModal('ReHLDS Android ARM64 (Bionic)', 'Optimized Counter-Strike 1.6 server core compiled natively for Android ARM64 bionic runtime.')">
+        <div class="project-title">ReHLDS Android ARM64 (Bionic)</div>
+        <p style="color: var(--text-muted); font-size: 14px;">High-performance server core optimization for mobile environments.</p>
         <span class="status">Work in progress..</span>
       </div>
-      <div class="card project-card" onclick="openModal('ReGameDLL ARM Bionic 64', 'Custom ReGameDLL implementation tailored for ARM bionic 64 environments.')">
-        <div class="project-title">ReGameDLL ARM Bionic 64</div>
-        <p style="color: var(--text-muted); font-size: 14px;">Gameplay logic and entity management.</p>
+      <div class="card project-card" onclick="openModal('ReGameDLL Android ARM64', 'Custom gameplay logic library and API wrapper tailored for CS 1.6 servers on Android ARM64.')">
+        <div class="project-title">ReGameDLL Android ARM64</div>
+        <p style="color: var(--text-muted); font-size: 14px;">Gameplay logic and entity management system.</p>
         <span class="status">Work in progress..</span>
       </div>
-      <div class="card project-card" onclick="openModal('MetaMod ARM Bionic 64', 'Metamod-R plugin loader adapted for ARM bionic 64 systems.')">
-        <div class="project-title">MetaMod ARM Bionic 64</div>
-        <p style="color: var(--text-muted); font-size: 14px;">Modular plugin architecture support.</p>
+      <div class="card project-card" onclick="openModal('MetaMod-R Android ARM64', 'Plugin management framework adapted for hosting and controlling CS 1.6 servers on mobile ARM64 systems.')">
+        <div class="project-title">MetaMod-R Android ARM64</div>
+        <p style="color: var(--text-muted); font-size: 14px;">Modular plugin architecture support for mobile servers.</p>
         <span class="status">Work in progress..</span>
       </div>
     </div>
@@ -54,7 +54,7 @@
           - <strong>Languages:</strong> Python 3, C/C++, Java (J2ME), HTML/CSS/JS<br>
           - <strong>Bot Development:</strong> <code>aiogram</code>, <code>telebot</code>, REST APIs<br>
           - <strong>Automation & Parsing:</strong> <code>BeautifulSoup</code>, <code>requests</code>, JSON/CSV processing<br>
-          - <strong>Game Server Software:</strong> ReHLDS, ReGameDLL, Metamod-R, Linux administration<br>
+          - <strong>Game Server Software:</strong> ReHLDS, ReGameDLL, Metamod-R, Linux/Android administration<br>
           <br>
           <strong>📌 Current Focus</strong><br>
           - Building robust Telegram bots and automation tools.<br>
@@ -75,7 +75,7 @@
       <h2 id="modalTitle" style="margin-bottom: 12px;"></h2>
       <p id="modalDesc" style="color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;"></p>
       <div class="modal-actions">
-        <a href="#" id="downloadBtn" class="btn">Download</a>
+        <a href="#" id="downloadBtn" class="btn btn-secondary">Download</a>
         <button class="btn btn-secondary" onclick="copyLink()">Copy link</button>
       </div>
     </div>
@@ -116,13 +116,32 @@
         data.forEach(review => {
           const card = document.createElement('div');
           card.className = 'card';
-          card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-              <span style="font-weight: 600; color: var(--accent-color);">@${review.author}</span>
-              <span style="font-size: 12px; color: var(--text-muted);">${review.date}</span>
-            </div>
-            <p style="color: var(--text-main); line-height: 1.4;">${review.text}</p>
-          `;
+          
+          const header = document.createElement('div');
+          header.style.display = 'flex';
+          header.style.justifyContent = 'space-between';
+          header.style.marginBottom = '8px';
+          
+          const authorSpan = document.createElement('span');
+          authorSpan.style.fontWeight = '600';
+          authorSpan.style.color = 'var(--accent-color)';
+          authorSpan.textContent = '@' + review.author;
+          
+          const dateSpan = document.createElement('span');
+          dateSpan.style.fontSize = '12px';
+          dateSpan.style.color = 'var(--text-muted)';
+          dateSpan.textContent = review.date;
+          
+          header.appendChild(authorSpan);
+          header.appendChild(dateSpan);
+          
+          const textP = document.createElement('p');
+          textP.style.color = 'var(--text-main)';
+          textP.style.lineHeight = '1.4';
+          textP.textContent = review.text;
+          
+          card.appendChild(header);
+          card.appendChild(textP);
           container.appendChild(card);
         });
       })

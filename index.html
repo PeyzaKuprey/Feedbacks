@@ -3,152 +3,227 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio of Peyza Kuprey: Telegram bots, automation, game server software.">
   <title>Peyza Kuprey | Portfolio</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="sidebar">
+  <nav class="sidebar">
     <h2>Peyza Kuprey</h2>
-    <button class="tab-btn active" onclick="switchTab('feedbacks')">Feedbacks</button>
-    <button class="tab-btn" onclick="switchTab('projects')">Projects</button>
-    <button class="tab-btn" onclick="switchTab('about')">About me</button>
-  </div>
+    <button class="tab-btn active" data-tab="feedbacks">Feedbacks</button>
+    <button class="tab-btn" data-tab="projects">Projects</button>
+    <button class="tab-btn" data-tab="about">About me</button>
+  </nav>
 
-  <div class="content">
-    
-    <div id="feedbacks" class="tab-content active">
+  <main class="content">
+
+    <section id="feedbacks" class="tab-content active">
       <h1>Client Feedbacks</h1>
-      <p style="margin-bottom: 20px; color: var(--text-muted);">
-        Verified reviews from <a href="https://t.me/peyzadev_feedback" target="_blank" style="color: var(--accent-color); text-decoration: none;">t.me/peyzadev_feedback</a>
+      <p class="muted-line">
+        Verified reviews from
+        <a href="https://t.me/peyzadev_feedback" target="_blank" rel="noopener">t.me/peyzadev_feedback</a>
       </p>
-      <div id="reviews-container"></div>
-    </div>
+      <div id="reviews-container">
+        <div class="card"><p class="empty">Loading...</p></div>
+      </div>
+    </section>
 
-    <div id="projects" class="tab-content">
+    <section id="projects" class="tab-content">
       <h1>Projects</h1>
-      <div class="card project-card" onclick="openModal('ReHLDS Android ARM64 (Bionic)', 'Optimized Counter-Strike 1.6 server core compiled natively for Android ARM64 bionic runtime.')">
-        <div class="project-title">ReHLDS Android ARM64 (Bionic)</div>
-        <p style="color: var(--text-muted); font-size: 14px;">High-performance server core optimization for mobile environments.</p>
-        <span class="status">Work in progress..</span>
-      </div>
-      <div class="card project-card" onclick="openModal('ReGameDLL Android ARM64', 'Custom gameplay logic library and API wrapper tailored for CS 1.6 servers on Android ARM64.')">
-        <div class="project-title">ReGameDLL Android ARM64</div>
-        <p style="color: var(--text-muted); font-size: 14px;">Gameplay logic and entity management system.</p>
-        <span class="status">Work in progress..</span>
-      </div>
-      <div class="card project-card" onclick="openModal('MetaMod-R Android ARM64', 'Plugin management framework adapted for hosting and controlling CS 1.6 servers on mobile ARM64 systems.')">
-        <div class="project-title">MetaMod-R Android ARM64</div>
-        <p style="color: var(--text-muted); font-size: 14px;">Modular plugin architecture support for mobile servers.</p>
-        <span class="status">Work in progress..</span>
-      </div>
-    </div>
+      <div id="projects-container"></div>
+    </section>
 
-    <div id="about" class="tab-content">
+    <section id="about" class="tab-content">
       <h1>About Me</h1>
       <div class="card">
         <div class="bio-text">
           Welcome to my profile! I am a developer focusing on <strong>Python scripts</strong>, <strong>automation</strong>, and <strong>game server software optimization</strong>.
           <br><br>
-          <strong>🛠 Tech Stack & Tools</strong><br>
+          <strong>🛠 Tech Stack &amp; Tools</strong><br>
           - <strong>Languages:</strong> Python 3, C/C++, Java (J2ME), HTML/CSS/JS<br>
           - <strong>Bot Development:</strong> <code>aiogram</code>, <code>telebot</code>, REST APIs<br>
-          - <strong>Automation & Parsing:</strong> <code>BeautifulSoup</code>, <code>requests</code>, JSON/CSV processing<br>
+          - <strong>Automation &amp; Parsing:</strong> <code>BeautifulSoup</code>, <code>requests</code>, JSON/CSV processing<br>
           - <strong>Game Server Software:</strong> ReHLDS, ReGameDLL, Metamod-R, Linux/Android administration<br>
           <br>
           <strong>📌 Current Focus</strong><br>
           - Building robust Telegram bots and automation tools.<br>
           - Optimizing game server configurations and backend logic.<br>
-          - Retro mobile software development & J2ME games porting.<br>
+          - Retro mobile software development &amp; J2ME games porting.<br>
           <br>
           <strong>📫 Contact Me</strong><br>
-          - <strong>Telegram:</strong> <a href="https://t.me/peyzadev_feedback" target="_blank" style="color: var(--accent-color); text-decoration: none;">@PeyzaKuprey</a>
+          - <strong>Telegram:</strong> <a href="https://t.me/peyzadev_feedback" target="_blank" rel="noopener">@PeyzaKuprey</a>
         </div>
       </div>
-    </div>
+    </section>
 
-  </div>
+  </main>
 
-  <div id="projectModal" class="modal">
+  <div id="projectModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-content">
-      <button class="close-modal" onclick="closeModal()">&times;</button>
-      <h2 id="modalTitle" style="margin-bottom: 12px;"></h2>
-      <p id="modalDesc" style="color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;"></p>
+      <button class="close-modal" id="closeModalBtn" aria-label="Close">&times;</button>
+      <h2 id="modalTitle" class="modal-title"></h2>
+      <p id="modalDesc" class="modal-desc"></p>
       <div class="modal-actions">
-        <a href="#" id="downloadBtn" class="btn btn-secondary">Download</a>
-        <button class="btn btn-secondary" onclick="copyLink()">Copy link</button>
+        <a href="#" id="downloadBtn" class="btn btn-secondary" target="_blank" rel="noopener">Download</a>
+        <button class="btn btn-secondary" id="copyBtn">Copy link</button>
       </div>
     </div>
   </div>
 
   <script>
+    // ---------- Projects data (edit here) ----------
+    // download: put a link when a build is ready; empty = button hidden
+    const PROJECTS = [
+      {
+        title: 'ReHLDS Android ARM64 (Bionic)',
+        short: 'High-performance server core optimization for mobile environments.',
+        desc: 'Optimized Counter-Strike 1.6 server core compiled natively for Android ARM64 bionic runtime.',
+        download: ''
+      },
+      {
+        title: 'ReGameDLL Android ARM64',
+        short: 'Gameplay logic and entity management system.',
+        desc: 'Custom gameplay logic library and API wrapper tailored for CS 1.6 servers on Android ARM64.',
+        download: ''
+      },
+      {
+        title: 'MetaMod-R Android ARM64',
+        short: 'Modular plugin architecture support for mobile servers.',
+        desc: 'Plugin management framework adapted for hosting and controlling CS 1.6 servers on mobile ARM64 systems.',
+        download: ''
+      }
+    ];
+
+    // ---------- Tabs ----------
     function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      event.currentTarget.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === tabId));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.toggle('active', el.dataset.tab === tabId));
+      history.replaceState(null, '', '#' + tabId);
     }
 
-    function openModal(title, desc) {
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalDesc').innerText = desc;
-      document.getElementById('projectModal').classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    const startTab = location.hash.replace('#', '');
+    if (['feedbacks', 'projects', 'about'].includes(startTab)) switchTab(startTab);
+
+    // ---------- Projects + modal ----------
+    const modal = document.getElementById('projectModal');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function openModal(project) {
+      document.getElementById('modalTitle').textContent = project.title;
+      document.getElementById('modalDesc').textContent = project.desc;
+      if (project.download) {
+        downloadBtn.href = project.download;
+        downloadBtn.style.display = '';
+      } else {
+        downloadBtn.style.display = 'none';
+      }
+      modal.classList.add('active');
     }
 
     function closeModal() {
-      document.getElementById('projectModal').classList.remove('active');
+      modal.classList.remove('active');
     }
 
-    function copyLink() {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
-    }
+    const projectsContainer = document.getElementById('projects-container');
+    PROJECTS.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'card project-card';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
 
-    fetch('reviews.json')
-      .then(response => response.json())
-      .then(data => {
-        const container = document.getElementById('reviews-container');
-        container.innerHTML = '';
-        if (data.length === 0) {
-          container.innerHTML = '<div class="card"><p style="color: var(--text-muted); text-align: center;">No results yet.</p></div>';
-          return;
-        }
-        data.forEach(review => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          
-          const header = document.createElement('div');
-          header.style.display = 'flex';
-          header.style.justifyContent = 'space-between';
-          header.style.marginBottom = '8px';
-          
-          const authorSpan = document.createElement('span');
-          authorSpan.style.fontWeight = '600';
-          authorSpan.style.color = 'var(--accent-color)';
-          authorSpan.textContent = '@' + review.author;
-          
-          const dateSpan = document.createElement('span');
-          dateSpan.style.fontSize = '12px';
-          dateSpan.style.color = 'var(--text-muted)';
-          dateSpan.textContent = review.date;
-          
-          header.appendChild(authorSpan);
-          header.appendChild(dateSpan);
-          
-          const textP = document.createElement('p');
-          textP.style.color = 'var(--text-main)';
-          textP.style.lineHeight = '1.4';
-          textP.textContent = review.text;
-          
-          card.appendChild(header);
-          card.appendChild(textP);
-          container.appendChild(card);
-        });
-      })
-      .catch(err => {
-        const container = document.getElementById('reviews-container');
-        container.innerHTML = '<div class="card"><p style="color: var(--text-muted); text-align: center;">No results yet.</p></div>';
+      const title = document.createElement('div');
+      title.className = 'project-title';
+      title.textContent = p.title;
+
+      const short = document.createElement('p');
+      short.className = 'project-short';
+      short.textContent = p.short;
+
+      const status = document.createElement('span');
+      status.className = 'status';
+      status.textContent = 'Work in progress..';
+
+      card.append(title, short, status);
+      card.addEventListener('click', () => openModal(p));
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(p); }
       });
+      projectsContainer.appendChild(card);
+    });
+
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('copyBtn');
+      try {
+        await navigator.clipboard.writeText(location.href.split('#')[0]);
+        btn.textContent = 'Copied!';
+      } catch (e) {
+        btn.textContent = 'Copy failed';
+      }
+      setTimeout(() => { btn.textContent = 'Copy link'; }, 1500);
+    });
+
+    // ---------- Reviews ----------
+    const reviewsContainer = document.getElementById('reviews-container');
+
+    function showEmpty(text) {
+      reviewsContainer.innerHTML = '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      const p = document.createElement('p');
+      p.className = 'empty';
+      p.textContent = text;
+      card.appendChild(p);
+      reviewsContainer.appendChild(card);
+    }
+
+    function renderReviews(data) {
+      reviewsContainer.innerHTML = '';
+      if (!Array.isArray(data) || data.length === 0) {
+        showEmpty('No reviews yet.');
+        return;
+      }
+      data.forEach(review => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const header = document.createElement('div');
+        header.className = 'review-header';
+
+        const author = document.createElement('span');
+        author.className = 'review-author';
+        author.textContent = '@' + review.author;
+
+        const date = document.createElement('span');
+        date.className = 'review-date';
+        date.textContent = review.date;
+
+        header.append(author, date);
+
+        const text = document.createElement('p');
+        text.className = 'review-text';
+        text.textContent = review.text;
+
+        card.append(header, text);
+        reviewsContainer.appendChild(card);
+      });
+    }
+
+    fetch('reviews.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(renderReviews)
+      .catch(() => showEmpty('No reviews yet.'));
   </script>
 </body>
 </html>
